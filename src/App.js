@@ -26,10 +26,6 @@ function App() {
 
   useEffect(() => {
     updateWindowDimensions();
-    window.addEventListener("resize", updateWindowDimensions);
-    return () => {
-      window.removeEventListener("resize", updateWindowDimensions);
-    };
   }, []);
 
   let updateWindowDimensions = () => {
@@ -40,7 +36,9 @@ function App() {
   };
 
   return (
-    <windowDimensionContext.Provider value={windowDimension}>
+    <windowDimensionContext.Provider
+      value={{ windowDimension, updateWindowDimensions }}
+    >
       <Router>
         <Switch>
           <Route path="/" component={HomePage} exact />

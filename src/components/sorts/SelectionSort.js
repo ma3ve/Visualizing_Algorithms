@@ -9,8 +9,12 @@ function SelectionSort() {
     maxx: 0,
     length: 0,
   });
+  const [inProgress, setInProgress] = React.useState(false);
 
-  const windowDimension = React.useContext(windowDimensionContext);
+  const windowDimension = React.useContext(windowDimensionContext)
+    .windowDimension;
+  const updateWindowDimensions = React.useContext(windowDimensionContext)
+    .updateWindowDimensions;
 
   React.useEffect(() => {
     setArraySettings({
@@ -20,7 +24,7 @@ function SelectionSort() {
   }, [windowDimension]);
 
   let randomArray = (length, max) =>
-    [...(new Array(Math.floor(length / 4)) + 5)].map(() =>
+    [...(new Array(Math.floor(length / 10)) + 5)].map(() =>
       Math.round(Math.random() * max)
     );
 
@@ -29,6 +33,8 @@ function SelectionSort() {
   }, [arraySettings]);
 
   const startSelectionSort = async () => {
+    setInProgress(true);
+
     for (let i = 0; i < array.length; i++) {
       let minI = i;
       for (let j = i + 1; j < array.length; j++) {
@@ -38,7 +44,7 @@ function SelectionSort() {
       }
       document.getElementById(minI).style.backgroundColor = "green";
       document.getElementById(i).style.backgroundColor = "blue";
-      await delay(0.25);
+      await delay(10);
       let temp = array[minI];
       array[minI] = array[i];
       array[i] = temp;
@@ -48,6 +54,7 @@ function SelectionSort() {
       setArray([...array]);
       // document.getElementById(i).style.backgroundColor = "white";
     }
+    setInProgress(false);
   };
 
   return (
@@ -69,8 +76,8 @@ function SelectionSort() {
               style={{
                 height: h,
                 background: "red",
-                width: "2px",
-                margin: "1px",
+                width: "6px",
+                margin: "2px",
               }}
               key={i}
               id={i}
@@ -84,13 +91,12 @@ function SelectionSort() {
             variant="contained"
             color="primary"
             onClick={() => {
-              setArray(
-                randomArray(arraySettings.length, arraySettings.maxx)
-              );
+              updateWindowDimensions();
               array.forEach((a, i) => {
                 document.getElementById(i).style.backgroundColor = "red";
               });
             }}
+            disabled={inProgress}
           >
             randomize
           </Button>
@@ -100,6 +106,7 @@ function SelectionSort() {
             variant="contained"
             color="primary"
             onClick={startSelectionSort}
+            disabled={inProgress}
           >
             Sort
           </Button>
