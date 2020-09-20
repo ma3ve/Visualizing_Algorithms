@@ -44,7 +44,7 @@ function SelectionSort() {
       }
       document.getElementById(minI).style.backgroundColor = "green";
       document.getElementById(i).style.backgroundColor = "blue";
-      await delay(10);
+      await delay(1);
       let temp = array[minI];
       array[minI] = array[i];
       array[i] = temp;

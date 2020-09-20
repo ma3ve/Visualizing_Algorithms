@@ -24,7 +24,7 @@ function QuickSort() {
   }, [windowDimension]);
 
   let randomArray = (length, max) =>
-    [...(new Array(Math.floor(length / 10)) + 5)].map(() =>
+    [...(new Array(Math.floor(length / 8)) + 5)].map(() =>
       Math.round(Math.random() * max)
     );
 
@@ -34,26 +34,48 @@ function QuickSort() {
 
   const startQuickSort = async () => {
     setInProgress(true);
+    let partition = async (start_i, end_i) => {
+      let pivot = array[end_i];
+      document.getElementById(start_i).style.background = "blue";
+      document.getElementById(end_i).style.background = "green";
 
-    for (let i = 0; i < array.length; i++) {
-      let minI = i;
-      for (let j = i + 1; j < array.length; j++) {
-        if (array[minI] > array[j]) {
-          minI = j;
+      let partition_i = start_i;
+
+      for (let i = start_i; i <= end_i - 1; i++) {
+        if (array[i] <= pivot) {
+          array[partition_i] = [
+            array[i],
+            (array[i] = array[partition_i]),
+          ][0];
+          partition_i++;
+          await delay(1);
+          setArray([...array]);
         }
       }
-      document.getElementById(minI).style.backgroundColor = "green";
-      document.getElementById(i).style.backgroundColor = "blue";
-      await delay(10);
-      let temp = array[minI];
-      array[minI] = array[i];
-      array[i] = temp;
-      document.getElementById(minI).style.backgroundColor = "red";
-      document.getElementById(i).style.backgroundColor = "white";
-
+      array[end_i] = [
+        array[partition_i],
+        (array[partition_i] = array[end_i]),
+      ][0];
+      await delay(1);
       setArray([...array]);
-      // document.getElementById(i).style.backgroundColor = "white";
-    }
+      document.getElementById(end_i).style.background = "red";
+      return partition_i;
+    };
+    let quickSort = async (start, end) => {
+      if (start >= end) {
+        document.getElementById(start) &&
+          (document.getElementById(start).style.background = "white");
+        return;
+      }
+      let partition_i = await partition(start, end);
+      document.getElementById(partition_i).style.background = "white";
+      await delay(1);
+      setArray([...array]);
+      await quickSort(start, partition_i - 1);
+      await quickSort(partition_i + 1, end);
+    };
+    await quickSort(0, array.length - 1);
+    setArray([...array]);
     setInProgress(false);
   };
 
@@ -76,7 +98,7 @@ function QuickSort() {
               style={{
                 height: h,
                 background: "red",
-                width: "6px",
+                width: "4px",
                 margin: "2px",
               }}
               key={i}
